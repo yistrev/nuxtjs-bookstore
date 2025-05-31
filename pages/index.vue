@@ -56,11 +56,11 @@
 </template>
 
 <script setup>
-// データの読み込み
-const { data: booksData } = await $fetch('/data/books.json')
+// composablesを使用してデータを取得
+const { books, categories } = useBooks()
 
-const totalBooks = computed(() => booksData.books.length)
-const totalCategories = computed(() => booksData.categories.length)
+const totalBooks = computed(() => books.length)
+const totalCategories = computed(() => categories.length)
 
 // SEO設定
 useHead({

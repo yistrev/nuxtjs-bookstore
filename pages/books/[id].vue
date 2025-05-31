@@ -141,9 +141,8 @@
 const route = useRoute()
 const bookId = route.params.id
 
-// データの読み込み
-const { data: booksData } = await $fetch('/data/books.json')
-const books = booksData.books
+// composablesを使用してデータを取得
+const { books } = useBooks()
 
 // 該当書籍を検索
 const book = books.find(b => b.id === bookId)
@@ -157,7 +156,6 @@ const relatedBooks = computed(() => {
 })
 
 // 完全なURLを生成（QRコード用）
-const { $config } = useNuxtApp()
 const fullUrl = computed(() => {
   if (process.client) {
     return `${window.location.origin}/books/${bookId}`

@@ -154,10 +154,8 @@
 const route = useRoute()
 const categoryId = route.params.id
 
-// データの読み込み
-const { data: booksData } = await $fetch('/data/books.json')
-const books = booksData.books
-const categories = booksData.categories
+// composablesを使用してデータを取得
+const { books, categories } = useBooks()
 
 // 該当カテゴリーを検索
 const category = categories.find(c => c.id === categoryId)

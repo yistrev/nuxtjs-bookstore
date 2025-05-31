@@ -96,10 +96,8 @@
 </template>
 
 <script setup>
-// データの読み込み
-const { data: booksData } = await $fetch('/data/books.json')
-const books = booksData.books
-const categories = booksData.categories
+// composablesを使用してデータを取得
+const { books, categories } = useBooks()
 
 // リアクティブな状態
 const searchQuery = ref('')
