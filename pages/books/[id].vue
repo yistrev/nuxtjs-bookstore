@@ -15,8 +15,12 @@
         <!-- 書籍画像 -->
         <div class="md:w-1/3">
           <div class="aspect-[3/4] bg-gray-200 flex items-center justify-center text-8xl">
-            📖
-            <!-- 実際の画像を使用する場合は <img :src="book.image" :alt="book.title" class="w-full h-full object-cover"> -->
+            <img
+              :src="book.image"
+              :alt="book.title"
+              class="w-full h-full object-cover"
+              @error="handleImageError"
+            >
           </div>
         </div>
 
@@ -116,7 +120,12 @@
         >
           <NuxtLink :to="`/books/${relatedBook.id}`">
             <div class="aspect-[3/4] bg-gray-200 flex items-center justify-center text-4xl">
-              📖
+              <img
+                :src="relatedBook.image"
+                :alt="relatedBook.title"
+                class="w-full h-full object-cover"
+                @error="handleImageError"
+              >
             </div>
             <div class="p-4">
               <h4 class="font-bold mb-2 line-clamp-2">{{ relatedBook.title }}</h4>
@@ -219,6 +228,19 @@ if (!book) {
     statusCode: 404,
     statusMessage: '書籍が見つかりません'
   })
+}
+
+// 画像読み込みエラー時のフォールバック
+const handleImageError = (event) => {
+  // エラー時は絵文字にフォールバック
+  event.target.style.display = 'none'
+  const parent = event.target.parentElement
+  if (parent && !parent.querySelector('.fallback-emoji')) {
+    const emoji = document.createElement('div')
+    emoji.className = 'fallback-emoji flex items-center justify-center w-full h-full text-6xl'
+    emoji.textContent = '📖'
+    parent.appendChild(emoji)
+  }
 }
 
 // SEO設定
