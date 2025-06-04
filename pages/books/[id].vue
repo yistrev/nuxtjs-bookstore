@@ -22,11 +22,17 @@
 
         <!-- 書籍情報 -->
         <div class="md:w-2/3 p-8">
-          <!-- カテゴリーバッジ -->
+          <!-- カテゴリーバッジ（複数対応） -->
           <div class="mb-4">
-            <span class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-              {{ book.category }}
-            </span>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="category in book.category"
+                :key="category"
+                class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full"
+              >
+                {{ category }}
+              </span>
+            </div>
           </div>
 
           <!-- タイトル -->
@@ -53,7 +59,15 @@
             </div>
             <div>
               <span class="text-sm font-medium text-gray-600">カテゴリー</span>
-              <p class="text-lg">{{ book.category }}</p>
+              <div class="flex flex-wrap gap-1 mt-1">
+                <span
+                  v-for="category in book.category"
+                  :key="category"
+                  class="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                >
+                  {{ category }}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -93,7 +107,7 @@
 
     <!-- 関連書籍 -->
     <div class="mt-12">
-      <h3 class="text-2xl font-bold text-gray-800 mb-6">📚 同じカテゴリーの本</h3>
+      <h3 class="text-2xl font-bold text-gray-800 mb-6">📚 関連する本</h3>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="relatedBook in relatedBooks"
@@ -107,6 +121,16 @@
             <div class="p-4">
               <h4 class="font-bold mb-2 line-clamp-2">{{ relatedBook.title }}</h4>
               <p class="text-sm text-gray-600">{{ relatedBook.author }}</p>
+              <!-- 共通カテゴリーを表示 -->
+              <div class="flex flex-wrap gap-1 mt-1 mb-2">
+                <span
+                  v-for="commonCategory in getCommonCategories(relatedBook)"
+                  :key="commonCategory"
+                  class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded"
+                >
+                  {{ commonCategory }}
+                </span>
+              </div>
               <p class="text-lg font-bold text-green-600 mt-2">¥{{ relatedBook.price.toLocaleString() }}</p>
             </div>
           </NuxtLink>
@@ -147,13 +171,24 @@ const { books } = useBooks()
 // 該当書籍を検索
 const book = books.find(b => b.id === bookId)
 
-// 関連書籍（同じカテゴリーの他の本）
+// 関連書籍（共通のカテゴリーを持つ他の本）
 const relatedBooks = computed(() => {
   if (!book) return []
+
   return books
-    .filter(b => b.category === book.category && b.id !== book.id)
+    .filter(b => {
+      if (b.id === book.id) return false
+      // カテゴリーが一つでも共通していれば関連書籍とする
+      return b.category.some(cat => book.category.includes(cat))
+    })
     .slice(0, 3)
 })
+
+// 共通カテゴリーを取得する関数
+const getCommonCategories = (relatedBook) => {
+  if (!book) return []
+  return relatedBook.category.filter(cat => book.category.includes(cat))
+}
 
 // 完全なURLを生成（QRコード用）
 const fullUrl = computed(() => {
