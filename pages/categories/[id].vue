@@ -12,7 +12,21 @@
     <!-- カテゴリーヘッダー -->
     <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-8 mb-8">
       <div class="text-center">
-        <div class="text-6xl mb-4">{{ getCategoryIcon(category.name) }}</div>
+        <!-- 柔軟なアイコン表示 -->
+        <div class="mb-4 flex justify-center">
+          <component
+            v-if="categoryIcon.type === 'svg'"
+            :is="'svg'"
+            :class="categoryIcon.className"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="categoryIcon.path"></path>
+          </component>
+          <div v-else :class="categoryIcon.className">{{ categoryIcon.content }}</div>
+        </div>
         <h1 class="text-3xl font-bold mb-2">{{ category.name }}</h1>
         <p class="text-blue-100 mb-4">{{ category.description }}</p>
         <div class="text-lg">
@@ -71,6 +85,18 @@
             <h3 class="font-bold text-lg mb-2 line-clamp-2">{{ book.title }}</h3>
             <p class="text-sm text-gray-600 mb-2">{{ book.author }}</p>
             <p class="text-sm text-gray-700 line-clamp-2 mb-3">{{ book.catchphrase }}</p>
+
+            <!-- カテゴリータグ -->
+            <div class="flex flex-wrap gap-1 mb-3">
+              <span
+                v-for="cat in book.category"
+                :key="cat"
+                class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded"
+              >
+                {{ cat }}
+              </span>
+            </div>
+
             <div class="flex justify-between items-center">
               <span class="text-lg font-bold text-green-600">¥{{ book.price.toLocaleString() }}</span>
               <span class="text-xs text-gray-500">詳細を見る →</span>
@@ -120,7 +146,21 @@
           :to="`/categories/${otherCategory.id}`"
           class="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow text-center"
         >
-          <div class="text-2xl mb-2">{{ getCategoryIcon(otherCategory.name) }}</div>
+          <!-- 柔軟なアイコン表示 -->
+          <div class="mb-2 flex justify-center">
+            <component
+              v-if="otherCategory.icon.type === 'svg'"
+              :is="'svg'"
+              :class="otherCategory.icon.className"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="otherCategory.icon.path"></path>
+            </component>
+            <div v-else :class="otherCategory.icon.className">{{ otherCategory.icon.content }}</div>
+          </div>
           <div class="font-medium text-sm">{{ otherCategory.name }}</div>
           <div class="text-xs text-gray-500">{{ getBookCountByCategory(otherCategory.name) }}冊</div>
         </NuxtLink>
@@ -155,15 +195,20 @@ const route = useRoute()
 const categoryId = route.params.id
 
 // composablesを使用してデータを取得
-const { books, categories } = useBooks()
+const { books, categories, getBooksByCategory, getBookCountByCategory, getCategoryIcon } = useBooks()
 
 // 該当カテゴリーを検索
 const category = categories.find(c => c.id === categoryId)
 
-// このカテゴリーの書籍
+// カテゴリーアイコンを取得
+const categoryIcon = computed(() => {
+  return category ? getCategoryIcon(category.name) : { type: "emoji", content: "📖", className: "text-5xl" }
+})
+
+// このカテゴリーの書籍（配列対応）
 const categoryBooks = computed(() => {
   if (!category) return []
-  return books.filter(book => book.category === category.name)
+  return getBooksByCategory(category.name)
 })
 
 // 他のカテゴリー
@@ -221,25 +266,6 @@ const maxPrice = computed(() => {
   if (categoryBooks.value.length === 0) return 0
   return Math.max(...categoryBooks.value.map(book => book.price)).toLocaleString()
 })
-
-// ヘルパー関数
-const getCategoryIcon = (categoryName) => {
-  const iconMap = {
-    'プログラミング': '💻',
-    'デザイン': '🎨',
-    '自己啓発': '📈',
-    'ビジネス': '💼',
-    '小説': '📚',
-    '歴史': '🏛️',
-    '科学': '🔬',
-    '料理': '👩‍🍳'
-  }
-  return iconMap[categoryName] || '📖'
-}
-
-const getBookCountByCategory = (categoryName) => {
-  return books.filter(book => book.category === categoryName).length
-}
 
 // 404エラーハンドリング
 if (!category) {

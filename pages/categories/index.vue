@@ -25,12 +25,26 @@
       <div
         v-for="category in sortedCategories"
         :key="category.id"
-        class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+        class="bg-white rounded-lg shadow-md border-gray-300 hover:shadow-lg transition-all duration-200 transform hover:scale-105"
       >
         <NuxtLink :to="`/categories/${category.id}`" class="block p-6">
           <!-- カテゴリーアイコン -->
           <div class="text-center mb-4">
-            <div class="text-5xl mb-2">{{ getCategoryIcon(category.name) }}</div>
+            <!-- 柔軟なアイコン表示 -->
+            <div class="mb-2 flex justify-center">
+              <component
+                v-if="category.icon.type === 'svg'"
+                :is="'svg'"
+                :class="category.icon.className"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="category.icon.path"></path>
+              </component>
+              <div v-else :class="category.icon.className">{{ category.icon.content }}</div>
+            </div>
             <h2 class="text-xl font-bold text-gray-800">{{ category.name }}</h2>
           </div>
 
@@ -40,7 +54,7 @@
           <!-- 書籍数 -->
           <div class="text-center">
             <span class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-              {{ getBookCountByCategory(category.name) }}冊
+              {{ category.bookCount }}冊
             </span>
           </div>
 
@@ -84,36 +98,17 @@
   </div>
 </template>
 
+
 <script setup>
 // composablesを使用してデータを取得
-const { books, categories } = useBooks()
+const { books, categories, getBooksByCategory, getBookCountByCategory } = useBooks()
 
 // ソート状態
 const sortBy = ref('name')
 
-// カテゴリーアイコンを取得
-const getCategoryIcon = (categoryName) => {
-  const iconMap = {
-    'プログラミング': '💻',
-    'デザイン': '🎨',
-    '自己啓発': '📈',
-    'ビジネス': '💼',
-    '小説': '📚',
-    '歴史': '🏛️',
-    '科学': '🔬',
-    '料理': '👩‍🍳'
-  }
-  return iconMap[categoryName] || '📖'
-}
-
-// カテゴリー別書籍数を取得
-const getBookCountByCategory = (categoryName) => {
-  return books.filter(book => book.category === categoryName).length
-}
-
 // カテゴリー別最新書籍を取得
 const getLatestBookByCategory = (categoryName) => {
-  const categoryBooks = books.filter(book => book.category === categoryName)
+  const categoryBooks = getBooksByCategory(categoryName)
   return categoryBooks[0] // 実際のアプリでは日付でソートする
 }
 
