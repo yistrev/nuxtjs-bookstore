@@ -81,6 +81,87 @@
             <p class="text-gray-700 leading-relaxed">{{ book.description }}</p>
           </div>
 
+          <!-- セクション情報 -->
+          <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📋 この本の内容</h3>
+            <div class="space-y-6">
+              <!-- セクション1 -->
+              <div
+                v-if="book.sectionhead1 && book.sectiontext1"
+                class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500"
+              >
+                <!-- セクション画像 -->
+                <div v-if="book.sectionimage1" class="mb-4">
+                  <img
+                    :src="book.sectionimage1"
+                    :alt="book.sectionhead1"
+                    class="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                    @error="handleSectionImageError"
+                  >
+                </div>
+                <h4 class="text-md font-semibold text-gray-800 mb-2">{{ book.sectionhead1 }}</h4>
+                <p class="text-gray-700 mb-3">{{ book.sectiontext1 }}</p>
+                <a
+                  v-if="book.sectionlink1"
+                  :href="book.sectionlink1"
+                  class="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded font-medium transition-colors"
+                >
+                  詳細を見る →
+                </a>
+              </div>
+
+              <!-- セクション2 -->
+              <div
+                v-if="book.sectionhead2 && book.sectiontext2"
+                class="bg-gray-50 p-4 rounded-lg border-l-4 border-green-500"
+              >
+                <!-- セクション画像 -->
+                <div v-if="book.sectionimage2" class="mb-4">
+                  <img
+                    :src="book.sectionimage2"
+                    :alt="book.sectionhead2"
+                    class="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                    @error="handleSectionImageError"
+                  >
+                </div>
+                <h4 class="text-md font-semibold text-gray-800 mb-2">{{ book.sectionhead2 }}</h4>
+                <p class="text-gray-700 mb-3">{{ book.sectiontext2 }}</p>
+                <a
+                  v-if="book.sectionlink2"
+                  :href="book.sectionlink2"
+                  class="inline-block bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded font-medium transition-colors"
+                >
+                  詳細を見る →
+                </a>
+              </div>
+
+              <!-- セクション3 -->
+              <div
+                v-if="book.sectionhead3 && book.sectiontext3"
+                class="bg-gray-50 p-4 rounded-lg border-l-4 border-purple-500"
+              >
+                <!-- セクション画像 -->
+                <div v-if="book.sectionimage3" class="mb-4">
+                  <img
+                    :src="book.sectionimage3"
+                    :alt="book.sectionhead3"
+                    class="w-full max-w-md mx-auto rounded-lg shadow-sm"
+                    @error="handleSectionImageError"
+                  >
+                </div>
+                <h4 class="text-md font-semibold text-gray-800 mb-2">{{ book.sectionhead3 }}</h4>
+                <p class="text-gray-700 mb-3">{{ book.sectiontext3 }}</p>
+                <a
+                  v-if="book.sectionlink3"
+                  :href="book.sectionlink3"
+                  class="inline-block bg-purple-500 hover:bg-purple-600 text-white text-sm px-4 py-2 rounded font-medium transition-colors"
+                >
+                  詳細を見る →
+                </a>
+              </div>
+            </div>
+          </div>
+
           <!-- アクション -->
           <div class="flex flex-wrap gap-4">
             <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
@@ -241,6 +322,12 @@ const handleImageError = (event) => {
     emoji.textContent = '📖'
     parent.appendChild(emoji)
   }
+}
+
+// セクション画像読み込みエラー時のフォールバック
+const handleSectionImageError = (event) => {
+  // エラー時は画像を非表示にする
+  event.target.style.display = 'none'
 }
 
 // SEO設定

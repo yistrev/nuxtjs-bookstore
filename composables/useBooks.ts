@@ -19,6 +19,7 @@ export const useBooks = () => {
         "sectionhead3": "パフォーマンス最適化",
         "sectiontext3": "Vue.jsアプリケーションのパフォーマンスを向上させるためのテクニックとベストプラクティスを紹介します。",
         "sectionlink1": "/books/vue-guide#basic",
+        "sectionimage1": "/images/vue-basics.jpg",
       },
       {
         "id": "book-002",
@@ -37,7 +38,9 @@ export const useBooks = () => {
         "sectionhead3": "",
         "sectiontext3": "",
         "sectionlink1": "/books/design-patterns#basics",
-        "sectionlink2": "/books/design-patterns#application"
+        "sectionlink2": "/books/design-patterns#application",
+        "sectionimage1": "/images/design-patterns-basics.jpg",
+        "sectionimage2": "/images/design-patterns-application.jpg"
       },
       {
         "id": "book-003",
@@ -57,7 +60,10 @@ export const useBooks = () => {
         "sectiontext3": "現在のUI/UXデザインのトレンドと、最新技術の活用方法について紹介します。",
         "sectionlink1": "/books/ui-ux-design#principles",
         "sectionlink2": "/books/ui-ux-design#practical",
-        "sectionlink3": "/books/ui-ux-design#trends"
+        "sectionlink3": "/books/ui-ux-design#trends",
+        "sectionimage1": "/images/ui-ux-principles.jpg",
+        "sectionimage2": "/images/ui-ux-practical.jpg",
+        "sectionimage3": "/images/ui-ux-trends.jpg"
       },
       {
         "id": "book-004",
